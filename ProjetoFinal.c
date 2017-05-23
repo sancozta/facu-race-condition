@@ -55,8 +55,7 @@ void *fwritew(void *d)
 int main()
 {
     struct args largs[10];
-int up()
-
+    
     pthread_t thr_escritores[N_ESCRITOR];
 
     for (int i = 0; i < N_ESCRITOR; i++)
