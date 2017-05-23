@@ -7,13 +7,14 @@
 int sem = 1;
 
 struct args {
-    FILE *f;
     int i;
 };
 
 int down()
 {
-    sem = sem - 1;
+    if(sem > 0){
+        sem = sem - 1;
+    }
     return sem;
 }
 
@@ -26,46 +27,44 @@ int up()
 void *fwritew(void *d)
 {
     struct args *date = d;
+    
     int s;
     s = down();
+    
+    printf("S %d\n",s);
+    
     if (s == 0)
     {
-        fprintf(date->f, "Escritor %d\n", date->i);
-        printf("Escritor %d\n", date->i);
+        char path[] = "file.txt";
+        FILE *file;
+        file = fopen(path, "w");
+        if (file == NULL)
+        {
+            printf("Erro ao abrir o arquivo!");
+        }
+        else
+        {
+            fprintf(file, "Escritor %d\n", date->i);
+            printf("Escritor %d\n", date->i);
+            fclose(file);
+        }
+        up();
     }
-    up();
 }
 
 int main()
 {
-    char path[] = "file.txt";
-    FILE *file;
     struct args largs[10];
+int up()
 
-    file = fopen(path, "w");
-    if (file == NULL)
+    pthread_t thr_escritores[N_ESCRITOR];
+
+    for (int i = 0; i < N_ESCRITOR; i++)
     {
-        printf("Erro ao abrir o arquivo!");
+        largs[i].i = i;
+        pthread_create(&thr_escritores[i], NULL, fwritew, (void *)&largs[i]);
+        printf("T %d\n", i);
     }
-    else
-    {
-        pthread_t thr_escritores[N_ESCRITOR];
 
-        for (int i = 0; i < N_ESCRITOR; i++)
-        {
-            largs[i].f = file;
-            largs[i].i = i;
-            pthread_create(&thr_escritores[i], NULL, fwritew, (void *)&largs[i]);
-        }
-
-        for (int i = 0; i < N_ESCRITOR; i++)
-        {
-            pthread_join(thr_escritores[i], NULL);
-        }
-
-        fclose(file);
-        
-        return 0;
-    }
-    
+    return 0;
 }
