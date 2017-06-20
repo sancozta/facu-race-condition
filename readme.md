@@ -15,8 +15,8 @@ Os resultados obtidos são a execução de todas as threads tentando utilizar o 
 
 - Para compilar o código utilize a seguinte instrução em ambiente linux
 
-	> gcc projeto.c -pthread -o projeto.bin
-
+		gcc projeto.c -pthread -o projeto.bin
+		
 - Após compilar basta executar utilizando
 
-	> ./projeto.bin
+		./projeto.bin
